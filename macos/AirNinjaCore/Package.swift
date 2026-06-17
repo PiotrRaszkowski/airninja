@@ -10,6 +10,7 @@ let package = Package(
     targets: [
         .target(name: "AirNinjaCore"),
         .executableTarget(name: "InteropHarness", dependencies: ["AirNinjaCore"]),
+        .executableTarget(name: "SmsSender", dependencies: ["AirNinjaCore"]),
         .testTarget(name: "AirNinjaCoreTests", dependencies: ["AirNinjaCore"])
     ]
 )

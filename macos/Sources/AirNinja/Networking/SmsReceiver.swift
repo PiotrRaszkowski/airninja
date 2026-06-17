@@ -63,6 +63,8 @@ final class SmsReceiver {
             guard case let .control(payload) = try FrameCodec.decode(channel.receive()) else { continue }
             let envelope = try SmsMessages.decode(payload)
             let message = envelope.payload
+            print("RECEIVED SMS from \(message.sender): \(message.body)")
+            fflush(stdout)
             Task { @MainActor in
                 self.model.received(message)
                 Notifier.postSms(message)

@@ -1,17 +1,16 @@
-import AirNinjaCore
 import Foundation
 import Network
 
 /// Blocking `ByteStream` over an `NWConnection`, so the synchronous `SecureChannel`
 /// handshake/transport can run on a worker thread while Network.framework drives I/O.
-final class ConnectionStream: ByteStream {
+public final class ConnectionStream: ByteStream {
     private let connection: NWConnection
     private let condition = NSCondition()
     private var buffer = Data()
     private var closed = false
     private var failure: Error?
 
-    init(connection: NWConnection) {
+    public init(connection: NWConnection) {
         self.connection = connection
         pump()
     }
@@ -37,7 +36,7 @@ final class ConnectionStream: ByteStream {
         }
     }
 
-    func readExact(_ count: Int) throws -> Data {
+    public func readExact(_ count: Int) throws -> Data {
         condition.lock()
         defer { condition.unlock() }
         while buffer.count < count {
@@ -54,7 +53,7 @@ final class ConnectionStream: ByteStream {
         return result
     }
 
-    func write(_ data: Data) throws {
+    public func write(_ data: Data) throws {
         let semaphore = DispatchSemaphore(value: 0)
         var sendError: Error?
         connection.send(content: data, completion: .contentProcessed { error in
