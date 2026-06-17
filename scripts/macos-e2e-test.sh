@@ -26,7 +26,9 @@ APP_BIN="$(find "$HOME/Library/Developer/Xcode/DerivedData/AirNinja-"*/Build/Pro
 SENDER_BIN="$ROOT/macos/AirNinjaCore/.build/debug/SmsSender"
 APP_LOG="$(mktemp)"
 
-"$APP_BIN" >"$APP_LOG" 2>&1 &
+# AIRNINJA_AUTO_PAIR lets this headless test auto-accept the pairing prompt
+# (a real run shows interactive Accept/Reject in the menu bar instead).
+AIRNINJA_AUTO_PAIR=1 "$APP_BIN" >"$APP_LOG" 2>&1 &
 APP_PID=$!
 trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
 sleep 2

@@ -34,13 +34,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
 
 @MainActor
 final class AppController {
-    let model = ReceiverModel()
+    let model = ReceiverModel(messageStore: MessageStore())
+    private let identity = KeychainIdentityStore.loadOrCreate()
+    private let trustStore = TrustStore()
     private var receiver: SmsReceiver?
 
     func start() {
         guard receiver == nil else { return }
         Notifier.requestAuthorization()
-        let receiver = SmsReceiver(identity: DeviceIdentity.generate(), model: model)
+        model.setOwnDeviceId(identity.deviceId)
+        model.setStatus("Waiting for device…")
+        let receiver = SmsReceiver(identity: identity, model: model, trustStore: trustStore)
         receiver.start()
         self.receiver = receiver
     }

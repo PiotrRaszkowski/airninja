@@ -38,10 +38,20 @@ The app depends on the local `AirNinjaCore` package and runs as a menu-bar SMS r
   `SecureChannel` runs on a worker thread.
 - Verified: builds via `xcodebuild`, launches, and advertises `_airninja._tcp` on the LAN.
 
+## Pairing & persistence (implemented)
+
+- **Keychain-persisted identity** (`KeychainIdentityStore`) — stable DeviceId/SAS across launches.
+- **Interactive SAS pairing** — an unknown peer triggers an Accept/Reject panel in the menu
+  bar showing the 6-digit SAS; on accept the peer's static key is pinned (`TrustStore`).
+- **Key pinning / MITM defense** — a known deviceId reconnecting with a *different* static key
+  is rejected automatically.
+- **Message persistence** (`MessageStore`) — received SMS survive restarts.
+
+Set `AIRNINJA_AUTO_PAIR=1` to auto-accept pairing for headless testing
+(see `scripts/macos-e2e-test.sh`).
+
 ## Next steps
 
-- Interactive SAS pairing UI (accept/reject) + **Keychain-persisted** identity key
-  (currently generated per launch) and remote-key pinning.
 - Relay fallback (connect out via WebSocket when no LAN peer).
 - Full end-to-end verification once the Android sender exists.
 - Wire the Share Extension to hand files to the app for transfer.

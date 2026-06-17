@@ -32,4 +32,9 @@ public struct DeviceIdentity {
         }
         return DeviceIdentity(privateKey: privateKey, publicKey: publicKey)
     }
+
+    public static func fromPrivateKey(_ rawPrivate: Data) throws -> DeviceIdentity {
+        let key = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: rawPrivate)
+        return DeviceIdentity(privateKey: rawPrivate, publicKey: key.publicKey.rawRepresentation)
+    }
 }

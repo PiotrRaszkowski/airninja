@@ -7,13 +7,15 @@ import Network
 final class SmsReceiver {
     private let identity: DeviceIdentity
     private let model: ReceiverModel
+    private let trustStore: TrustStore
     private let queue = DispatchQueue(label: "com.airninja.receiver")
     private let workers = DispatchQueue(label: "com.airninja.workers", attributes: .concurrent)
     private var listener: NWListener?
 
-    init(identity: DeviceIdentity, model: ReceiverModel) {
+    init(identity: DeviceIdentity, model: ReceiverModel, trustStore: TrustStore) {
         self.identity = identity
         self.model = model
+        self.trustStore = trustStore
     }
 
     func start() {
@@ -49,13 +51,53 @@ final class SmsReceiver {
         let stream = ConnectionStream(connection: connection)
         do {
             let channel = try SecureChannel.handshake(role: .responder, identity: identity, stream: stream)
-            let sas = channel.sas
-            Task { @MainActor in self.model.paired(sas: sas) }
+            guard authorize(channel) else {
+                Task { @MainActor in self.model.disconnected() }
+                connection.cancel()
+                return
+            }
             try receiveLoop(channel)
         } catch {
             Task { @MainActor in self.model.disconnected() }
             connection.cancel()
         }
+    }
+
+    private func authorize(_ channel: SecureChannel) -> Bool {
+        let key = channel.remoteStaticPublicKey
+        let deviceId = DeviceId.fromPublicKey(key)
+        let sas = channel.sas
+        switch trustStore.evaluate(deviceId: deviceId, key: key) {
+        case .trusted:
+            Task { @MainActor in self.model.paired(sas: sas, peer: deviceId) }
+            return true
+        case .mismatch:
+            Task { @MainActor in self.model.rejectedMismatch(deviceId) }
+            return false
+        case .unknown:
+            guard requestPairingDecision(sas: sas, deviceId: deviceId) else { return false }
+            trustStore.trust(deviceId: deviceId, key: key)
+            Task { @MainActor in self.model.paired(sas: sas, peer: deviceId) }
+            return true
+        }
+    }
+
+    private func requestPairingDecision(sas: String, deviceId: String) -> Bool {
+        if ProcessInfo.processInfo.environment["AIRNINJA_AUTO_PAIR"] == "1" {
+            return true
+        }
+        let semaphore = DispatchSemaphore(value: 0)
+        var accepted = false
+        let request = PendingPairing(
+            sas: sas,
+            deviceId: deviceId,
+            onAccept: { accepted = true; semaphore.signal() },
+            onReject: { semaphore.signal() }
+        )
+        Task { @MainActor in self.model.requestPairing(request) }
+        semaphore.wait()
+        Task { @MainActor in self.model.clearPairing() }
+        return accepted
     }
 
     private func receiveLoop(_ channel: SecureChannel) throws {
