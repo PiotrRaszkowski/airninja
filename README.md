@@ -32,6 +32,8 @@ opaque ciphertext and never holds session keys or plaintext.
 - **[docs/protocol.md](docs/protocol.md)** — full protocol specification (transport,
   Noise-based security & pairing, relay design, framing, message envelope, SMS bridge, file
   transfer, extensibility, security considerations, message schema reference).
+- **[docs/tech-stack.md](docs/tech-stack.md)** — technology choices per component (Flutter
+  Android, native Swift macOS, Java/Spring relay) and the shared-core strategy.
 - **[docs/README.md](docs/README.md)** — documentation index.
 
 ## Planned repository structure
@@ -40,11 +42,11 @@ This will fill in over later phases:
 
 ```
 airninja/
-├── docs/            # protocol specification & design docs   (Phase 1 ✓)
-├── android/         # Android client (Kotlin)                (future)
-├── macos/           # macOS client (Swift)                   (future)
-├── relay/           # optional cloud relay server            (future)
-└── shared/          # shared schemas / protocol definitions  (future)
+├── docs/            # protocol & tech-stack specs             (Phase 1 ✓)
+├── android/         # Flutter app + Kotlin protocol core      (future)
+├── macos/           # macOS client (Swift / SwiftUI)          (future)
+├── relay/           # cloud relay (Java 25 + Spring Boot)     (future)
+└── shared/          # conformance vectors / JSON schemas      (future)
 ```
 
 ## License
