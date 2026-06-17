@@ -12,6 +12,7 @@ enum Notifier {
         content.title = message.sender
         content.body = message.body
         content.sound = .default
+        content.interruptionLevel = .active
         let request = UNNotificationRequest(identifier: message.messageId, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
     }
