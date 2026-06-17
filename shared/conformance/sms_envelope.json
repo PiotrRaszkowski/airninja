@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "id": "11111111-1111-4111-8111-111111111111",
+  "type": "sms.message",
+  "ts": 1718600000000,
+  "payload": {
+    "sender": "+15551234567",
+    "body": "Hello from Android",
+    "timestamp": 1718599999000,
+    "messageId": "sms-42"
+  }
+}
