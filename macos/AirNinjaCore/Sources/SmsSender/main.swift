@@ -56,11 +56,14 @@ let stream = ConnectionStream(connection: connection)
 do {
     let channel = try SecureChannel.handshake(role: .initiator, identity: DeviceIdentity.generate(), stream: stream)
 
+    let arguments = CommandLine.arguments
+    let body = arguments.count > 1 ? arguments[1] : "Hello from the test sender"
+    let sender = arguments.count > 2 ? arguments[2] : "+15551234567"
     let sms = SmsMessage(
-        sender: "+15551234567",
-        body: "Hello from the test sender",
+        sender: sender,
+        body: body,
         timestamp: now,
-        messageId: "sms-e2e-1"
+        messageId: "sms-\(now)"
     )
     let envelope = SmsMessages.envelope(for: sms, id: UUID().uuidString, sentAt: now)
     try channel.send(FrameCodec.encode(.control(payload: try SmsMessages.encode(envelope))))
