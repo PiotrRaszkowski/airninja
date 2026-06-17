@@ -14,6 +14,7 @@ Android app as a plain library (wired to Flutter via platform channels). See
 | Frame codec (CONTROL/DATA, length-prefixed) | `framing/FrameCodec`, `framing/Frame` |
 | JSON envelope (kotlinx.serialization) | `message/Envelope`, `message/EnvelopeCodec` |
 | SAS derivation (pairing) | `pairing/Sas` |
+| Noise XX secure channel (org.signal.forks:noise-java) | `secure/NoiseHandshake`, `secure/TransportPair` |
 
 ## Build & test
 
@@ -28,5 +29,5 @@ the same vectors the Swift core must pass.
 
 ## Next slices
 
-- Noise XX/IK secure channel (via `noise-java`).
+- Swift Noise mirror + cross-language interop verification.
 - Feature message builders (`sms.*`, `files.*`).
