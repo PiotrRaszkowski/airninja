@@ -34,6 +34,12 @@ release/
 *.ipr
 *.iws
 
+# ── Eclipse / Buildship (created by IDE/LSP) ───────────
+.project
+.classpath
+.settings/
+bin/
+
 # ── VS Code ────────────────────────────────────────────
 .vscode/
 *.code-workspace
