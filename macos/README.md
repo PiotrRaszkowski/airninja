@@ -27,9 +27,21 @@ Targets:
 - **AirNinja** — the menu-bar app (`LSUIElement`, no Dock icon).
 - **AirNinjaShareExtension** — Share menu entry for sending files to Android.
 
-## Next steps (implementation phase)
+## SMS receiver (implemented)
 
-- Noise handshake layer over CryptoKit + framing/transfer state machines.
-- Bonjour discovery (`_airninja._tcp`) and `NWConnection` transport.
-- Pairing UI (SAS / QR), Keychain-backed identity key.
+The app depends on the local `AirNinjaCore` package and runs as a menu-bar SMS receiver:
+- `SmsReceiver` advertises `_airninja._tcp` via `NWListener`/Bonjour, accepts a connection,
+  runs the Noise XX handshake as **responder** (`SecureChannel`), then receives
+  `sms.message` frames, shows them in the menu bar + posts a `UserNotifications` alert, and
+  replies with `core.ack`.
+- `ConnectionStream` is a blocking `ByteStream` over `NWConnection` so the synchronous
+  `SecureChannel` runs on a worker thread.
+- Verified: builds via `xcodebuild`, launches, and advertises `_airninja._tcp` on the LAN.
+
+## Next steps
+
+- Interactive SAS pairing UI (accept/reject) + **Keychain-persisted** identity key
+  (currently generated per launch) and remote-key pinning.
+- Relay fallback (connect out via WebSocket when no LAN peer).
+- Full end-to-end verification once the Android sender exists.
 - Wire the Share Extension to hand files to the app for transfer.

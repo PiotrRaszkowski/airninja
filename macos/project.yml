@@ -7,10 +7,14 @@ options:
 
 settings:
   base:
-    SWIFT_VERSION: "6.0"
+    SWIFT_VERSION: "5.0"
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
+
+packages:
+  AirNinjaCore:
+    path: AirNinjaCore
 
 targets:
   AirNinja:
@@ -27,8 +31,13 @@ targets:
       properties:
         CFBundleName: AirNinja
         LSUIElement: true
+        NSLocalNetworkUsageDescription: AirNinja connects to your paired Android device on the local network.
+        NSBonjourServices:
+          - _airninja._tcp
     dependencies:
       - target: AirNinjaShareExtension
+      - package: AirNinjaCore
+        product: AirNinjaCore
 
   AirNinjaShareExtension:
     type: app-extension
