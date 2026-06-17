@@ -35,7 +35,7 @@ deliberately Rust-free and leans on the JVM where it helps, matching the team's 
         └─────────────┬─────────────┘         └─────────────┬─────────────┘
                       │            E2E Noise session (ciphertext only)      │
                       │  ┌──────────────────────────────────────────────┐  │
-                      └──┤   RELAY  (Java 25 + Spring Boot, Loom vthreads)├──┘
+                      └──┤   RELAY  (Java 21 + Spring Boot, Loom vthreads)├──┘
                          │   WebSocket ciphertext router, presence,       │
                          │   store-and-forward — never sees plaintext     │
                          └──────────────────────────────────────────────┘
@@ -97,8 +97,8 @@ other on a LAN. It never holds session keys or plaintext (see protocol §7).
 
 | Concern | Choice |
 |---------|--------|
-| Language / runtime | **Java 25 (LTS, Zulu via sdkman)** |
-| Framework | **Spring Boot 3.x** |
+| Language / runtime | **Java 21 (LTS, Zulu via sdkman)** |
+| Framework | **Spring Boot 4.1** |
 | Transport | **WebSocket** (`spring-boot-starter-websocket`), WSS via TLS termination |
 | Concurrency | **Virtual threads (Project Loom)** — `spring.threads.virtual.enabled=true` |
 | Build | **Gradle (Kotlin DSL)** or Maven; pinned via `.sdkmanrc` |
@@ -155,7 +155,7 @@ clients. KMP remains an option if code duplication becomes painful later.
 
 - **Serialization:** JSON control envelopes (`kotlinx.serialization` / `Codable` / Jackson
   on the relay). Binary `DATA` frames are raw bytes per protocol §8.
-- **Versioning of tools:** `.sdkmanrc` pins **Java** (`25.x-zulu`) and **Gradle** for the
+- **Versioning of tools:** `.sdkmanrc` pins **Java** (`21.0.11-zulu`) and **Gradle** for the
   relay and any Android Gradle usage, per project convention. Run `sdk env` before builds.
 - **CI:** GitHub Actions matrix — build/test Android (Flutter + Kotlin unit tests), macOS
   (Xcode build + Swift tests), relay (Gradle/Spring tests), and a **conformance job** that
@@ -172,7 +172,7 @@ airninja/
 ├── docs/            # protocol.md, tech-stack.md, design docs       (Phase 1 ✓)
 ├── android/         # Flutter app + android/ Kotlin protocol core    (future)
 ├── macos/           # Swift/SwiftUI app + Share Extension            (future)
-├── relay/           # Java 25 + Spring Boot WebSocket relay          (future)
+├── relay/           # Java 21 + Spring Boot WebSocket relay          (future)
 └── shared/          # conformance test vectors + JSON schemas        (future)
 ```
 
@@ -185,7 +185,7 @@ airninja/
 | Flutter / Dart | Flutter stable 3.x / Dart 3.x |
 | Android | Kotlin 2.x, AGP 8.x, minSdk 26+, NSD/Telephony APIs |
 | macOS | Swift 6, SwiftUI, target macOS 14 (Sonoma)+ |
-| Relay | Java 25-zulu (sdkman), Spring Boot 3.x, Gradle 8.x |
+| Relay | Java 21.0.11-zulu (sdkman), Spring Boot 4.1, Gradle (wrapper 9.5) |
 | Noise (Android) | `noise-java` latest |
 | Crypto (macOS) | CryptoKit (OS-provided) |
 
@@ -199,4 +199,4 @@ airninja/
 | Android core | Kotlin + `noise-java` via platform channels | Native APIs required anyway; proven Noise lib; JVM strength |
 | macOS | Native Swift + SwiftUI + CryptoKit | Real AirDrop-like integration (Share Extension, menu bar, Keychain) |
 | Shared core | Two native cores + conformance vectors (no Rust, no FFI) | No hand-rolled crypto; simple toolchain; spec is the contract |
-| Relay | Java 25 + Spring Boot + Loom | Familiar JVM; vthreads scale blocking I/O; relay carries no crypto |
+| Relay | Java 21 + Spring Boot + Loom | Familiar JVM; vthreads scale blocking I/O; relay carries no crypto |

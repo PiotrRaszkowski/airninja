@@ -1,0 +1,51 @@
+name: AirNinja
+options:
+  bundleIdPrefix: com.airninja
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  AirNinja:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/AirNinja
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.airninja.mac
+        ENABLE_HARDENED_RUNTIME: true
+    info:
+      path: Sources/AirNinja/Info.plist
+      properties:
+        CFBundleName: AirNinja
+        LSUIElement: true
+    dependencies:
+      - target: AirNinjaShareExtension
+
+  AirNinjaShareExtension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Sources/ShareExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.airninja.mac.ShareExtension
+        ENABLE_HARDENED_RUNTIME: true
+    info:
+      path: Sources/ShareExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Send with AirNinja
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsFileWithMaxCount: 50
