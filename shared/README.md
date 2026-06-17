@@ -25,8 +25,14 @@ python3 generate_vectors.py
 | `frameEncoding` (DATA) | `[len:4 BE][0x02][streamId:4 BE][seq:8 BE][flags:1][chunk]`, `flags 0x01 = final` |
 | `sasDerivation` | 6-digit `= uint32_BE(SHA-256("AIRNINJA-SAS" ‖ handshakeHash)[:4]) % 1_000_000` |
 
+## Noise handshake vector
+
+[`conformance/noise_xx_vector.json`](conformance/noise_xx_vector.json) is the official
+`Noise_XX_25519_ChaChaPoly_SHA256` known-answer vector (from rweather/noise-c,
+`tests/vector/noise-c-basic.txt`). The Swift `NoiseVectorTests` reproduces every handshake
+and transport message plus the handshake hash byte-for-byte, proving the hand-rolled
+CryptoKit implementation matches the spec (and therefore the Kotlin `noise-java` side).
+
 ## Next steps
 
-- Add Noise handshake vectors (fixed ephemeral keys → expected transcript) once the
-  handshake layer lands on both clients.
 - Optional: JSON Schema files for each message type to validate envelopes.

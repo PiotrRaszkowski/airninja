@@ -13,6 +13,12 @@ package. See [../../docs/tech-stack.md](../../docs/tech-stack.md) §4.
 | Frame codec (CONTROL/DATA) | `FrameCodec.swift`, `Frame.swift` |
 | SAS derivation (pairing) | `Sas.swift` |
 | Base32 / SHA-256 helpers | `Base32.swift`, `Sha256.swift` |
+| Noise XX secure channel (hand-rolled on CryptoKit) | `Noise/NoiseHandshake.swift`, `Noise/SymmetricState.swift`, `Noise/CipherState.swift`, `Noise/NoiseCrypto.swift` |
+
+The Noise implementation is validated against the official `Noise_XX_25519_ChaChaPoly_SHA256`
+test vector (`NoiseVectorTests` reproduces every handshake/transport message and the
+handshake hash byte-for-byte), guaranteeing spec conformance and interop with the Kotlin
+`noise-java` side.
 
 ## Test
 
