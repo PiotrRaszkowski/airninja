@@ -52,9 +52,21 @@ guard let connection = connect(to: endpoint, timeout: 8) else {
     fail("could not connect to discovered service", code: 2)
 }
 
+func loadOrCreateIdentity() -> DeviceIdentity {
+    let path = ProcessInfo.processInfo.environment["AIRNINJA_SENDER_KEY"]
+        ?? FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(".airninja-sender.key").path
+    let url = URL(fileURLWithPath: path)
+    if let data = try? Data(contentsOf: url), let identity = try? DeviceIdentity.fromPrivateKey(data) {
+        return identity
+    }
+    let identity = DeviceIdentity.generate()
+    try? identity.privateKey.write(to: url)
+    return identity
+}
+
 let stream = ConnectionStream(connection: connection)
 do {
-    let channel = try SecureChannel.handshake(role: .initiator, identity: DeviceIdentity.generate(), stream: stream)
+    let channel = try SecureChannel.handshake(role: .initiator, identity: loadOrCreateIdentity(), stream: stream)
 
     let arguments = CommandLine.arguments
     let body = arguments.count > 1 ? arguments[1] : "Hello from the test sender"
