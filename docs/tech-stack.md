@@ -170,10 +170,11 @@ clients. KMP remains an option if code duplication becomes painful later.
 ```
 airninja/
 ├── docs/            # protocol.md, tech-stack.md, design docs       (Phase 1 ✓)
-├── android/         # Flutter app + android/ Kotlin protocol core    (future)
+├── protocol-core/   # pure-JVM Kotlin protocol core + unit tests     (in progress)
+├── android/         # Flutter app; depends on protocol-core          (future)
 ├── macos/           # Swift/SwiftUI app + Share Extension            (future)
 ├── relay/           # Java 21 + Spring Boot WebSocket relay          (future)
-└── shared/          # conformance test vectors + JSON schemas        (future)
+└── shared/          # conformance test vectors + JSON schemas        (Phase 1 ✓)
 ```
 
 ---

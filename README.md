@@ -43,10 +43,11 @@ This will fill in over later phases:
 ```
 airninja/
 ├── docs/            # protocol & tech-stack specs             (Phase 1 ✓)
-├── android/         # Flutter app + Kotlin protocol core      (future)
+├── protocol-core/   # Kotlin/JVM protocol core + tests        (in progress)
+├── android/         # Flutter app (Kotlin core via channels)  (future)
 ├── macos/           # macOS client (Swift / SwiftUI)          (future)
-├── relay/           # cloud relay (Java 25 + Spring Boot)     (future)
-└── shared/          # conformance vectors / JSON schemas      (future)
+├── relay/           # cloud relay (Java 21 + Spring Boot)     (future)
+└── shared/          # conformance vectors / JSON schemas      (Phase 1 ✓)
 ```
 
 ## License
